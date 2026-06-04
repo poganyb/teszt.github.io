@@ -158,7 +158,18 @@ document.addEventListener('DOMContentLoaded', () => {
             name: 'prog',
             type: 'dir',
             path: 'egyetem/prog',
-            children: []
+            children: [
+                {
+                    name: 'futtat.py',
+                    type: 'file',
+                    path: 'egyetem/prog/futtat.py'
+                },
+                {
+                    name: 'dokumentum.docx',
+                    type: 'file',
+                    path: 'egyetem/prog/dokumentum.docx'
+                }
+            ]
         },
         {
             name: 'statisztika',
@@ -215,30 +226,101 @@ document.addEventListener('DOMContentLoaded', () => {
         return null;
     }
 
-    // Load Excel File Data
-    function loadExcelFile(path, name) {
-        setStatus('info', 'Fájl betöltése folyamatban...', `Kapcsolódás a '${path}' fájlhoz a tárhelyről...`);
-
-        fetch(path)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP hiba! státusz: ${response.status}`);
+    // Load File (checks file extension and routes to appropriate viewer)
+    function loadFile(path, name) {
+        const ext = name.split('.').pop().toLowerCase();
+        
+        // Select viewers
+        const codeViewer = document.getElementById('code-viewer');
+        const downloadViewer = document.getElementById('download-viewer');
+        
+        // Hide all viewers initially
+        excelViewer.style.display = 'none';
+        if (codeViewer) codeViewer.style.display = 'none';
+        if (downloadViewer) downloadViewer.style.display = 'none';
+        
+        if (ext === 'xlsx' || ext === 'xls') {
+            setStatus('info', 'Excel fájl betöltése folyamatban...', `Kapcsolódás a '${path}' fájlhoz a tárhelyről...`);
+            
+            fetch(path)
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP hiba! státusz: ${response.status}`);
+                    return response.arrayBuffer();
+                })
+                .then(data => {
+                    const arr = new Uint8Array(data);
+                    const workbook = XLSX.read(arr, { type: 'array' });
+                    loadWorkbook(workbook, name);
+                })
+                .catch(error => {
+                    console.error('Error fetching file:', error);
+                    setStatus(
+                        'error', 
+                        'A fájl nem tölthető be automatikusan', 
+                        `A(z) ${name} fájl nem érhető el. Próbáld meg betölteni a Másik fájl betöltése gombbal.`
+                    );
+                });
+        } else if (['py', 'cpp', 'c', 'java', 'js', 'html', 'css', 'json', 'txt', 'cs', 'h', 'sh', 'xml'].includes(ext)) {
+            setStatus('info', 'Forráskód betöltése...', `Beolvasás folyamatban: ${name}...`);
+            
+            fetch(path)
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP hiba! státusz: ${response.status}`);
+                    return response.text();
+                })
+                .then(text => {
+                    if (codeViewer) {
+                        const codeTitle = document.getElementById('code-file-title');
+                        const codeContainer = document.getElementById('code-container');
+                        
+                        if (codeTitle) codeTitle.textContent = name;
+                        if (codeContainer) codeContainer.textContent = text;
+                        
+                        codeViewer.style.display = 'flex';
+                        setStatus('success', 'Fájl sikeresen betöltve', `Jelenleg megtekintve: ${name}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching file:', error);
+                    setStatus('error', 'Sikertelen megnyitás', `Nem sikerült beolvasni a(z) ${name} fájl tartalmát.`);
+                });
+        } else {
+            // Binary formats (ZIP, PDF, Word doc, docx, etc.) -> Show Download Card
+            setStatus('info', 'Fájl megnyitása...', `A(z) ${name} közvetlenül nem jeleníthető meg.`);
+            
+            if (downloadViewer) {
+                const cardIcon = document.getElementById('download-card-icon');
+                const cardTitle = document.getElementById('download-card-title');
+                const cardDesc = document.getElementById('download-card-desc');
+                const cardButton = document.getElementById('download-card-button');
+                
+                // Set appropriate icon class
+                let iconClass = 'fa-regular fa-file';
+                let iconColorClass = 'generic-icon';
+                
+                if (ext === 'pdf') {
+                    iconClass = 'fa-regular fa-file-pdf';
+                    iconColorClass = 'pdf-icon';
+                } else if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext)) {
+                    iconClass = 'fa-regular fa-file-zipper';
+                    iconColorClass = 'zip-icon';
+                } else if (ext === 'docx' || ext === 'doc') {
+                    iconClass = 'fa-regular fa-file-word';
+                    iconColorClass = 'word-icon';
                 }
-                return response.arrayBuffer();
-            })
-            .then(data => {
-                const arr = new Uint8Array(data);
-                const workbook = XLSX.read(arr, { type: 'array' });
-                loadWorkbook(workbook, name);
-            })
-            .catch(error => {
-                console.error('Error fetching file:', error);
-                setStatus(
-                    'error', 
-                    'A fájl nem tölthető be automatikusan', 
-                    `A(z) ${name} fájl nem érhető el a(z) ${path} útvonalon. Kérlek ellenőrizd, hogy a fájl a helyén van-e a repóban! Addig is, próbáld ki a betöltést a jobb oldali gombbal.`
-                );
-            });
+                
+                if (cardIcon) cardIcon.className = `${iconClass} ${iconColorClass}`;
+                if (cardTitle) cardTitle.textContent = name;
+                if (cardDesc) cardDesc.textContent = `A(z) .${ext.toUpperCase()} fájlformátum közvetlenül nem jeleníthető meg a böngészőben.`;
+                if (cardButton) {
+                    cardButton.href = path;
+                    cardButton.setAttribute('download', name);
+                }
+                
+                downloadViewer.style.display = 'flex';
+                setStatus('success', 'Fájl letöltésre kész', `Fájl elérése: ${name}`);
+            }
+        }
     }
 
     // Fetch folder content recursively from GitHub Contents API
@@ -247,13 +329,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!response.ok) throw new Error(`GitHub API error: ${response.status}`);
         const data = await response.json();
         
-        // Filter out readmes and keep only directories and Excel files
+        // Filter out readmes, keep everything else
         const filtered = data.filter(item => {
             if (item.name.toLowerCase().includes('readme')) return false;
-            if (item.name.endsWith('.txt')) return false;
-            if (item.type === 'dir') return true;
-            const ext = item.name.split('.').pop().toLowerCase();
-            return ext === 'xlsx' || ext === 'xls';
+            return true;
         });
         
         const items = [];
@@ -330,9 +409,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 li.dataset.path = item.path;
                 
+                // Determine icon based on file extension
+                let iconClass = 'fa-regular fa-file';
+                let iconColorClass = 'generic-icon';
+                const ext = item.name.split('.').pop().toLowerCase();
+                
+                if (ext === 'xlsx' || ext === 'xls') {
+                    iconClass = 'fa-regular fa-file-excel';
+                    iconColorClass = 'excel-icon';
+                } else if (['py', 'cpp', 'c', 'java', 'js', 'html', 'css', 'json', 'txt', 'cs', 'h', 'sh', 'xml'].includes(ext)) {
+                    iconClass = 'fa-regular fa-file-code';
+                    iconColorClass = 'code-icon';
+                } else if (ext === 'pdf') {
+                    iconClass = 'fa-regular fa-file-pdf';
+                    iconColorClass = 'pdf-icon';
+                } else if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext)) {
+                    iconClass = 'fa-regular fa-file-zipper';
+                    iconColorClass = 'zip-icon';
+                } else if (ext === 'docx' || ext === 'doc') {
+                    iconClass = 'fa-regular fa-file-word';
+                    iconColorClass = 'word-icon';
+                }
+                
                 li.innerHTML = `
                     <div class="file-info-group">
-                        <i class="fa-regular fa-file-excel excel-icon"></i>
+                        <i class="${iconClass} ${iconColorClass}"></i>
                         <div class="file-details">
                             <span class="file-name">${item.name}</span>
                             <span class="file-path">${item.path}</span>
@@ -349,7 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.querySelectorAll('.file-item').forEach(el => el.classList.remove('active'));
                     li.classList.add('active');
                     
-                    loadExcelFile(item.path, item.name);
+                    loadFile(item.path, item.name);
                     closeSidebar();
                 });
             }
@@ -378,9 +479,9 @@ document.addEventListener('DOMContentLoaded', () => {
         renderFileTree(treeData, fileTreeContainer, 0, defaultPath);
 
         if (defaultFile) {
-            loadExcelFile(defaultFile.path, defaultFile.name);
+            loadFile(defaultFile.path, defaultFile.name);
         } else {
-            setStatus('error', 'Nincsenek Excel fájlok', 'Nem találtunk megjeleníthető Excel fájlt a tárhelyen.');
+            setStatus('error', 'Nincsenek elérhető fájlok', 'Nem találtunk megjeleníthető fájlt a tárhelyen.');
         }
     }
 
