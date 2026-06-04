@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="hu">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,11 @@
     <!-- Stylesheet -->
     <link rel="stylesheet" href="index.css">
 </head>
+
 <body>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
     <!-- Header -->
     <header class="main-header">
@@ -31,10 +36,7 @@
 
     <!-- Main Container -->
     <main class="dashboard-container">
-        
-        <!-- Sidebar Overlay -->
-        <div class="sidebar-overlay" id="sidebar-overlay"></div>
-        
+
         <!-- Sidebar / File list info -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header-mobile">
@@ -60,24 +62,26 @@
                     </li>
                 </ul>
             </div>
-            
+
             <div class="sidebar-section instructions">
                 <h3><i class="fa-solid fa-circle-info"></i> Útmutató</h3>
-                <p>A weboldal automatikusan megpróbálja betölteni a <code>egyetem/statgyak.xlsx</code> fájlt a saját mappájából.</p>
-                <p><strong>GitHub Pages-en:</strong> Helyezd el az <code>egyetem</code> mappát és benne a <code>statgyak.xlsx</code> fájlt a <code>teszt.github.io</code> repodban.</p>
+                <p>A weboldal automatikusan megpróbálja betölteni a <code>egyetem/statgyak.xlsx</code> fájlt a saját
+                    mappájából.</p>
+                <p><strong>GitHub Pages-en:</strong> Helyezd el az <code>egyetem</code> mappát és benne a
+                    <code>statgyak.xlsx</code> fájlt a <code>teszt.github.io</code> repodban.</p>
             </div>
         </aside>
 
         <!-- Main Viewer Content -->
         <section class="viewer-content">
-            
+
             <!-- Controls / Search and Uploader -->
             <div class="controls-panel">
                 <div class="search-box">
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
                     <input type="text" id="table-search" placeholder="Keresés a táblázatban..." disabled>
                 </div>
-                
+
                 <!-- Fallback Uploader for testing custom files -->
                 <div class="upload-box">
                     <label for="file-upload" class="btn btn-upload">
@@ -100,13 +104,13 @@
             <div id="excel-viewer" class="excel-viewer" style="display: none;">
                 <!-- Sheet Selector Tabs -->
                 <div id="sheet-tabs" class="sheet-tabs"></div>
-                
+
                 <!-- Scroll Hint for Mobile -->
                 <div class="scroll-hint">
                     <i class="fa-solid fa-left-right-arrows"></i>
                     <span>Húzd el oldalra a táblázat megtekintéséhez</span>
                 </div>
-                
+
                 <!-- Scrollable Table View -->
                 <div class="table-outer-container">
                     <div id="table-container" class="table-container"></div>
@@ -127,4 +131,5 @@
     <!-- App Logic -->
     <script src="script.js"></script>
 </body>
+
 </html>
