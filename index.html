@@ -86,13 +86,35 @@
 
                 <!-- Scroll Hint for Mobile -->
                 <div class="scroll-hint">
-                    <i class="fa-solid fa-left-right-arrows"></i>
+                    <i class="fa-solid fa-left-right"></i>
                     <span>Húzd el oldalra a táblázat megtekintéséhez</span>
                 </div>
 
                 <!-- Scrollable Table View -->
                 <div class="table-outer-container">
                     <div id="table-container" class="table-container"></div>
+                </div>
+            </div>
+
+            <!-- Code/Text Viewer Area -->
+            <div id="code-viewer" class="code-viewer" style="display: none;">
+                <div class="code-viewer-header">
+                    <i class="fa-regular fa-file-code"></i> <span id="code-file-title">fajl.py</span>
+                </div>
+                <div class="code-outer-container">
+                    <pre><code id="code-container" class="code-container"></code></pre>
+                </div>
+            </div>
+
+            <!-- Generic Download Card Area -->
+            <div id="download-viewer" class="download-viewer" style="display: none;">
+                <div class="download-card">
+                    <i id="download-card-icon" class="fa-regular fa-file-zipper"></i>
+                    <h3 id="download-card-title">fajl.zip</h3>
+                    <p id="download-card-desc">Ez a fájlformátum közvetlenül nem jeleníthető meg a böngészőben.</p>
+                    <a id="download-card-button" href="#" download class="btn btn-download-large">
+                        <i class="fa-solid fa-download"></i> Fájl letöltése
+                    </a>
                 </div>
             </div>
 
