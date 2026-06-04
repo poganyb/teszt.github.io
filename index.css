@@ -603,6 +603,127 @@ body {
 }
 
 /* ==========================================
+   CODE & MULTI-FORMAT VIEWERS
+   ========================================== */
+.code-viewer {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-height: 400px;
+}
+
+.code-viewer-header {
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.code-outer-container {
+    flex: 1;
+    overflow: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #0f172a; /* Slate 900 dark background */
+    padding: 18px;
+    max-height: 600px;
+}
+
+.code-container {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+    color: #f1f5f9; /* Slate 100 code text */
+    line-height: 1.6;
+}
+
+.download-viewer {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 50px 20px;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+}
+
+.download-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 15px;
+    max-width: 400px;
+}
+
+#download-card-icon {
+    font-size: 4.5rem;
+    margin-bottom: 10px;
+}
+
+.download-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.download-card p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.btn-download-large {
+    background-color: var(--primary);
+    color: #ffffff !important;
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    margin-top: 10px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-download-large:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+/* Specific File Type Icons */
+.code-icon {
+    color: #f97316 !important; /* Orange for code */
+}
+
+.pdf-icon {
+    color: #ef4444 !important; /* Red for PDF */
+}
+
+.zip-icon {
+    color: #8b5cf6 !important; /* Purple for ZIP */
+}
+
+.word-icon {
+    color: #2b579a !important; /* Blue for Word */
+}
+
+.generic-icon {
+    color: #6b7280 !important; /* Gray for others */
+}
+
+/* ==========================================
    RESPONSIVE LAYOUTS
    ========================================== */
 @media (max-width: 768px) {
@@ -696,5 +817,20 @@ body {
     .table-container th,
     .table-container td {
         padding: 8px 10px;
+    }
+
+    .code-viewer {
+        padding: 12px;
+        min-height: auto;
+    }
+
+    .code-outer-container {
+        max-height: 400px;
+        padding: 12px;
+    }
+
+    .download-viewer {
+        padding: 25px 12px;
+        min-height: auto;
     }
 }
