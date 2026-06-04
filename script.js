@@ -171,6 +171,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     path: 'egyetem/statisztika/statgyak.xlsx'
                 },
                 {
+                    name: 'statmegoldo.xlsx',
+                    type: 'file',
+                    path: 'egyetem/statisztika/statmegoldo.xlsx'
+                },
+                {
                     name: 'statzhmegoldo.xlsx',
                     type: 'file',
                     path: 'egyetem/statisztika/statzhmegoldo.xlsx'
