@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const fileUrl = 'egyetem/statgyak.xlsx';
     const statusCard = document.getElementById('status-card');
     const statusTitle = document.getElementById('status-title');
     const statusDesc = document.getElementById('status-desc');
@@ -10,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableContainer = document.getElementById('table-container');
     const searchInput = document.getElementById('table-search');
     const fileUpload = document.getElementById('file-upload');
+    const fileTreeContainer = document.getElementById('file-tree-container');
     
     // Mobile Drawer Navigation elements
     const sidebar = document.getElementById('sidebar');
@@ -152,11 +152,69 @@ document.addEventListener('DOMContentLoaded', () => {
         searchInput.value = '';
     }
 
-    // Fetch the Excel file from local path / GitHub repo
-    function fetchExcelFile() {
-        setStatus('info', 'Fájl betöltése folyamatban...', `Kapcsolódás a '${fileUrl}' fájlhoz a tárhelyről...`);
+    // Fallback tree structure for offline/local view
+    const fallbackTree = [
+        {
+            name: 'prog',
+            type: 'dir',
+            path: 'egyetem/prog',
+            children: []
+        },
+        {
+            name: 'statisztika',
+            type: 'dir',
+            path: 'egyetem/statisztika',
+            children: [
+                {
+                    name: 'statgyak.xlsx',
+                    type: 'file',
+                    path: 'egyetem/statisztika/statgyak.xlsx'
+                },
+                {
+                    name: 'statzhmegoldo.xlsx',
+                    type: 'file',
+                    path: 'egyetem/statisztika/statzhmegoldo.xlsx'
+                }
+            ]
+        }
+    ];
 
-        fetch(fileUrl)
+    const repoOwner = 'poganyb';
+    const repoName = 'teszt.github.io';
+    const baseApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/egyetem`;
+
+    // Check if an item contains the active child file path
+    function hasActiveChild(item, activePath) {
+        if (item.type === 'file') {
+            return item.path === activePath;
+        }
+        if (item.type === 'dir' && item.children) {
+            return item.children.some(child => hasActiveChild(child, activePath));
+        }
+        return false;
+    }
+
+    // Helper: Find first Excel file in tree
+    function findFirstExcelFile(items) {
+        for (const item of items) {
+            if (item.type === 'file') {
+                const ext = item.name.split('.').pop().toLowerCase();
+                if (ext === 'xlsx' || ext === 'xls') {
+                    return item;
+                }
+            } else if (item.type === 'dir' && item.children) {
+                const found = findFirstExcelFile(item.children);
+                if (found) return found;
+            }
+        }
+        return null;
+    }
+
+    // Load Excel File Data
+    function loadExcelFile(path, name) {
+        setStatus('info', 'Fájl betöltése folyamatban...', `Kapcsolódás a '${path}' fájlhoz a tárhelyről...`);
+
+        fetch(path)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP hiba! státusz: ${response.status}`);
@@ -166,16 +224,159 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 const arr = new Uint8Array(data);
                 const workbook = XLSX.read(arr, { type: 'array' });
-                loadWorkbook(workbook, 'statgyak.xlsx');
+                loadWorkbook(workbook, name);
             })
             .catch(error => {
                 console.error('Error fetching file:', error);
                 setStatus(
                     'error', 
-                    'A statgyak.xlsx nem tölthető be automatikusan', 
-                    `A fájl nem található a megadott útvonalon (${fileUrl}). Kérlek ellenőrizd, hogy a fájl a helyén van-e a repóban! Addig is, próbáld ki a betöltést a jobb oldali gombbal.`
+                    'A fájl nem tölthető be automatikusan', 
+                    `A(z) ${name} fájl nem érhető el a(z) ${path} útvonalon. Kérlek ellenőrizd, hogy a fájl a helyén van-e a repóban! Addig is, próbáld ki a betöltést a jobb oldali gombbal.`
                 );
             });
+    }
+
+    // Fetch folder content recursively from GitHub Contents API
+    async function fetchGitHubDirectory(url) {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`GitHub API error: ${response.status}`);
+        const data = await response.json();
+        
+        // Filter out readmes and keep only directories and Excel files
+        const filtered = data.filter(item => {
+            if (item.name.toLowerCase().includes('readme')) return false;
+            if (item.name.endsWith('.txt')) return false;
+            if (item.type === 'dir') return true;
+            const ext = item.name.split('.').pop().toLowerCase();
+            return ext === 'xlsx' || ext === 'xls';
+        });
+        
+        const items = [];
+        for (const item of filtered) {
+            const treeItem = {
+                name: item.name,
+                path: item.path,
+                type: item.type === 'dir' ? 'dir' : 'file',
+                children: []
+            };
+            
+            if (item.type === 'dir' && item.url) {
+                try {
+                    treeItem.children = await fetchGitHubDirectory(item.url);
+                } catch (e) {
+                    console.error(`Subfolder ${item.name} fetch failed:`, e);
+                }
+            }
+            items.push(treeItem);
+        }
+        return items;
+    }
+
+    // Render tree into container
+    function renderFileTree(items, container, level = 0, activePath = '') {
+        const ul = document.createElement('ul');
+        ul.className = level === 0 ? 'file-list' : 'file-list submenu';
+        
+        items.forEach(item => {
+            const li = document.createElement('li');
+            
+            if (item.type === 'dir') {
+                li.className = 'folder-item';
+                
+                const folderHeader = document.createElement('div');
+                folderHeader.className = 'folder-header';
+                
+                const shouldExpand = hasActiveChild(item, activePath);
+                
+                folderHeader.innerHTML = `
+                    <i class="${shouldExpand ? 'fa-solid fa-folder-open' : 'fa-solid fa-folder'} folder-icon"></i>
+                    <span class="folder-name">${item.name}</span>
+                    <i class="fa-solid fa-chevron-right folder-chevron" style="transform: ${shouldExpand ? 'rotate(90deg)' : 'rotate(0deg)'}"></i>
+                `;
+                
+                const submenuContainer = document.createElement('div');
+                submenuContainer.className = shouldExpand ? 'submenu-container' : 'submenu-container collapsed';
+                
+                if (item.children && item.children.length > 0) {
+                    renderFileTree(item.children, submenuContainer, level + 1, activePath);
+                } else {
+                    submenuContainer.innerHTML = '<div class="empty-folder">Üres mappa</div>';
+                }
+                
+                folderHeader.addEventListener('click', () => {
+                    const isCollapsed = submenuContainer.classList.contains('collapsed');
+                    if (isCollapsed) {
+                        submenuContainer.classList.remove('collapsed');
+                        folderHeader.querySelector('.folder-icon').className = 'fa-solid fa-folder-open folder-icon';
+                        folderHeader.querySelector('.folder-chevron').style.transform = 'rotate(90deg)';
+                    } else {
+                        submenuContainer.classList.add('collapsed');
+                        folderHeader.querySelector('.folder-icon').className = 'fa-solid fa-folder folder-icon';
+                        folderHeader.querySelector('.folder-chevron').style.transform = 'rotate(0deg)';
+                    }
+                });
+                
+                li.appendChild(folderHeader);
+                li.appendChild(submenuContainer);
+            } else {
+                li.className = 'file-item';
+                if (item.path === activePath) {
+                    li.classList.add('active');
+                }
+                li.dataset.path = item.path;
+                
+                li.innerHTML = `
+                    <div class="file-info-group">
+                        <i class="fa-regular fa-file-excel excel-icon"></i>
+                        <div class="file-details">
+                            <span class="file-name">${item.name}</span>
+                            <span class="file-path">${item.path}</span>
+                        </div>
+                    </div>
+                    <a href="${item.path}" download class="btn-download-file" title="Letöltés">
+                        <i class="fa-solid fa-download"></i>
+                    </a>
+                `;
+                
+                li.addEventListener('click', (e) => {
+                    if (e.target.closest('.btn-download-file')) return;
+                    
+                    document.querySelectorAll('.file-item').forEach(el => el.classList.remove('active'));
+                    li.classList.add('active');
+                    
+                    loadExcelFile(item.path, item.name);
+                    closeSidebar();
+                });
+            }
+            ul.appendChild(li);
+        });
+        container.appendChild(ul);
+    }
+
+    // Initialize Folder Navigation
+    async function initFolderNavigation() {
+        setStatus('info', 'Fájllista betöltése...', 'Kapcsolódás a tárhelyhez...');
+        let treeData = null;
+        
+        try {
+            treeData = await fetchGitHubDirectory(baseApiUrl);
+        } catch (e) {
+            console.warn("GitHub API error, using offline fallback tree:", e);
+            treeData = fallbackTree;
+        }
+
+        // Render file tree
+        fileTreeContainer.innerHTML = '';
+        const defaultFile = findFirstExcelFile(treeData);
+        const defaultPath = defaultFile ? defaultFile.path : '';
+        
+        renderFileTree(treeData, fileTreeContainer, 0, defaultPath);
+
+        if (defaultFile) {
+            loadExcelFile(defaultFile.path, defaultFile.name);
+        } else {
+            setStatus('error', 'Nincsenek Excel fájlok', 'Nem találtunk megjeleníthető Excel fájlt a tárhelyen.');
+        }
     }
 
     // ==========================================
@@ -232,6 +433,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Initialise fetch
-    fetchExcelFile();
+    initFolderNavigation();
 
 });
