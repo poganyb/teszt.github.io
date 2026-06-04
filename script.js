@@ -155,6 +155,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fallback tree structure for offline/local view
     const fallbackTree = [
         {
+            name: 'penzugyek',
+            type: 'dir',
+            path: 'egyetem/penzugyek',
+            children: [
+                {
+                    name: 'bemutato1.pptx',
+                    type: 'file',
+                    path: 'egyetem/penzugyek/bemutato1.pptx'
+                },
+                {
+                    name: 'prezentacio2.ppt',
+                    type: 'file',
+                    path: 'egyetem/penzugyek/prezentacio2.ppt'
+                }
+            ]
+        },
+        {
             name: 'prog',
             type: 'dir',
             path: 'egyetem/prog',
@@ -307,6 +324,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else if (ext === 'docx' || ext === 'doc') {
                     iconClass = 'fa-regular fa-file-word';
                     iconColorClass = 'word-icon';
+                } else if (ext === 'pptx' || ext === 'ppt') {
+                    iconClass = 'fa-regular fa-file-powerpoint';
+                    iconColorClass = 'ppt-icon';
                 }
                 
                 if (cardIcon) cardIcon.className = `${iconClass} ${iconColorClass}`;
@@ -429,6 +449,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else if (ext === 'docx' || ext === 'doc') {
                     iconClass = 'fa-regular fa-file-word';
                     iconColorClass = 'word-icon';
+                } else if (ext === 'pptx' || ext === 'ppt') {
+                    iconClass = 'fa-regular fa-file-powerpoint';
+                    iconColorClass = 'ppt-icon';
                 }
                 
                 li.innerHTML = `
