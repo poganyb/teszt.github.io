@@ -1,404 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FIFA World Cup 2026 | USA - Canada - Mexico</title>
+    <title>Egyetemi Tanulmányi Portál</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;650;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Header / Navbar -->
-    <header class="navbar">
-        <div class="logo">
-            <span class="logo-fifa">FIFA</span>
-            <span class="logo-year">2026</span>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-brand">
+            <i class="fa-solid fa-graduation-cap logo-icon"></i>
+            <h1>Egyetemi Tanulmányi Portál</h1>
         </div>
-        <nav class="nav-links">
-            <a href="#hero">Home</a>
-            <a href="#stats">Overview</a>
-            <a href="#cities">Host Cities</a>
-            <a href="#funfacts">Fun Facts</a>
-        </nav>
-        <div class="nav-cta">
-            <a href="#cities" class="btn btn-secondary">Explore Stadiums</a>
+        <div class="header-status">
+            <span class="badge badge-test">TESZT FÁZIS</span>
         </div>
-        <button class="mobile-menu-btn" aria-label="Toggle Navigation">
-            <i class="fa-solid fa-bars"></i>
-        </button>
     </header>
 
-    <!-- Hero Section -->
-    <section id="hero" class="hero-section">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <div class="badge fade-in">THE NEXT ERA OF FOOTBALL</div>
-            <h1 class="hero-title fade-in">
-                <span>FIFA WORLD CUP</span>
-                <span class="gradient-text">2026</span>
-            </h1>
-            <p class="hero-subtitle fade-in">
-                Three Nations. One Historic Tournament. USA • Canada • Mexico
-            </p>
-            
-            <!-- Countdown Timer -->
-            <div class="countdown-container fade-in">
-                <h3 class="countdown-title">COUNTDOWN TO KICKOFF</h3>
-                <div class="timer">
-                    <div class="timer-segment">
-                        <span id="days" class="timer-val">00</span>
-                        <span class="timer-label">DAYS</span>
-                    </div>
-                    <div class="timer-divider">:</div>
-                    <div class="timer-segment">
-                        <span id="hours" class="timer-val">00</span>
-                        <span class="timer-label">HOURS</span>
-                    </div>
-                    <div class="timer-divider">:</div>
-                    <div class="timer-segment">
-                        <span id="minutes" class="timer-val">00</span>
-                        <span class="timer-label">MINUTES</span>
-                    </div>
-                    <div class="timer-divider">:</div>
-                    <div class="timer-segment">
-                        <span id="seconds" class="timer-val">00</span>
-                        <span class="timer-label">SECONDS</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="hero-actions fade-in">
-                <a href="#stats" class="btn btn-primary">Discover More</a>
-                <a href="#funfacts" class="btn btn-outline"><i class="fa-solid fa-lightbulb"></i> Fun Facts</a>
-            </div>
-        </div>
+    <!-- Main Container -->
+    <main class="dashboard-container">
         
-        <!-- Scroll indicator -->
-        <div class="scroll-indicator">
-            <span class="mouse">
-                <span class="wheel"></span>
-            </span>
-            <span class="arrows">
-                <span></span>
-                <span></span>
-            </span>
-        </div>
-    </section>
+        <!-- Sidebar / File list info -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3><i class="fa-solid fa-folder-open"></i> Fájlok a tárhelyen</h3>
+                <ul class="file-list">
+                    <li class="file-item active" id="statgyak-link">
+                        <i class="fa-regular fa-file-excel excel-icon"></i>
+                        <div class="file-details">
+                            <span class="file-name">statgyak.xlsx</span>
+                            <span class="file-path">egyetem/statgyak.xlsx</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-section instructions">
+                <h3><i class="fa-solid fa-circle-info"></i> Útmutató</h3>
+                <p>A weboldal automatikusan megpróbálja betölteni a <code>egyetem/statgyak.xlsx</code> fájlt a saját mappájából.</p>
+                <p><strong>GitHub Pages-en:</strong> Helyezd el az <code>egyetem</code> mappát és benne a <code>statgyak.xlsx</code> fájlt a <code>teszt.github.io</code> repodban.</p>
+            </div>
+        </aside>
 
-    <!-- Stats Overview Section -->
-    <section id="stats" class="stats-section">
-        <div class="section-container">
-            <div class="section-header">
-                <h2 class="section-title">A World Cup of Firsts</h2>
-                <div class="section-divider"></div>
-                <p class="section-desc">The 2026 edition is set to redefine the global game with historic expansions and co-hosting details.</p>
+        <!-- Main Viewer Content -->
+        <section class="viewer-content">
+            
+            <!-- Controls / Search and Uploader -->
+            <div class="controls-panel">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="table-search" placeholder="Keresés a táblázatban..." disabled>
+                </div>
+                
+                <!-- Fallback Uploader for testing custom files -->
+                <div class="upload-box">
+                    <label for="file-upload" class="btn btn-upload">
+                        <i class="fa-solid fa-file-import"></i> Másik fájl betöltése (.xlsx)
+                    </label>
+                    <input type="file" id="file-upload" accept=".xlsx, .xls">
+                </div>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fa-solid fa-earth-americas"></i></div>
-                    <div class="stat-number">3</div>
-                    <div class="stat-label">Host Nations</div>
-                    <p class="stat-desc">USA, Canada & Mexico uniting to host the largest event in sporting history.</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
-                    <div class="stat-number">48</div>
-                    <div class="stat-label">Expanded Teams</div>
-                    <p class="stat-desc">For the first time, 48 nations will compete in the finals, up from 32 teams.</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fa-solid fa-city"></i></div>
-                    <div class="stat-number">16</div>
-                    <div class="stat-label">Host Cities</div>
-                    <p class="stat-desc">16 world-class cities preparing to hold legendary matches across North America.</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fa-solid fa-ticket"></i></div>
-                    <div class="stat-number">104</div>
-                    <div class="stat-label">Total Matches</div>
-                    <p class="stat-desc">An extended schedule of 104 thrilling games, building up to the grand finale.</p>
+            <!-- Status message card -->
+            <div id="status-card" class="status-card info">
+                <div class="status-icon"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                <div class="status-text">
+                    <h4 id="status-title">Fájl betöltése folyamatban...</h4>
+                    <p id="status-desc">Kapcsolódás a 'egyetem/statgyak.xlsx' fájlhoz a szerverről.</p>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Host Cities Section -->
-    <section id="cities" class="cities-section">
-        <div class="section-container">
-            <div class="section-header">
-                <h2 class="section-title">Host Cities & Venues</h2>
-                <div class="section-divider"></div>
-                <p class="section-desc">Discover the 16 incredible venues spread across three massive host nations.</p>
-            </div>
-
-            <!-- Filter Buttons -->
-            <div class="filter-container">
-                <button class="filter-btn active" data-filter="all">All Nations</button>
-                <button class="filter-btn" data-filter="usa"><i class="fa-solid fa-flag-usa"></i> USA</button>
-                <button class="filter-btn" data-filter="canada"><i class="fa-solid fa-leaf"></i> Canada</button>
-                <button class="filter-btn" data-filter="mexico"><i class="fa-solid fa-pizza-slice"></i> Mexico</button>
-            </div>
-
-            <!-- Cities Grid -->
-            <div class="cities-grid">
-                <!-- USA -->
-                <div class="city-card" data-country="usa">
-                    <div class="city-img-placeholder" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
-                        <!-- Space for stadium image later -->
-                        <span class="placeholder-text"><i class="fa-solid fa-hotel"></i> Stadium Image</span>
-                        <div class="country-badge usa-badge">USA</div>
-                    </div>
-                    <div class="city-info">
-                        <h3>New York/New Jersey</h3>
-                        <p class="stadium-name">MetLife Stadium</p>
-                        <div class="stadium-meta">
-                            <span><i class="fa-solid fa-users-viewfinder"></i> Capacity: 82,500</span>
-                            <span><i class="fa-solid fa-trophy"></i> Host of Finale</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="city-card" data-country="usa">
-                    <div class="city-img-placeholder" style="background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);">
-                        <span class="placeholder-text"><i class="fa-solid fa-hotel"></i> Stadium Image</span>
-                        <div class="country-badge usa-badge">USA</div>
-                    </div>
-                    <div class="city-info">
-                        <h3>Los Angeles</h3>
-                        <p class="stadium-name">SoFi Stadium</p>
-                        <div class="stadium-meta">
-                            <span><i class="fa-solid fa-users-viewfinder"></i> Capacity: 70,240</span>
-                            <span><i class="fa-solid fa-star"></i> US Opening Match</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="city-card" data-country="usa">
-                    <div class="city-img-placeholder" style="background: linear-gradient(135deg, #3a7bd5 0%, #3a6073 100%);">
-                        <span class="placeholder-text"><i class="fa-solid fa-hotel"></i> Stadium Image</span>
-                        <div class="country-badge usa-badge">USA</div>
-                    </div>
-                    <div class="city-info">
-                        <h3>Dallas</h3>
-                        <p class="stadium-name">AT&T Stadium</p>
-                        <div class="stadium-meta">
-                            <span><i class="fa-solid fa-users-viewfinder"></i> Capacity: 80,000</span>
-                            <span><i class="fa-solid fa-shield-halved"></i> 9 Matches Host</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="city-card" data-country="usa">
-                    <div class="city-img-placeholder" style="background: linear-gradient(135deg, #1f4037 0%, #99f2c8 100%);">
-                        <span class="placeholder-text"><i class="fa-solid fa-hotel"></i> Stadium Image</span>
-                        <div class="country-badge usa-badge">USA</div>
-                    </div>
-                    <div class="city-info">
-                        <h3>Miami</h3>
-                        <p class="stadium-name">Hard Rock Stadium</p>
-                        <div class="stadium-meta">
-                            <span><i class="fa-solid fa-users-viewfinder"></i> Capacity: 64,767</span>
-                            <span><i class="fa-solid fa-medal"></i> Bronze Match Host</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Canada -->
-                <div class="city-card" data-country="canada">
-                    <div class="city-img-placeholder" style="background: linear-gradient(135deg, #d31027 0%, #ea384d 100%);">
-                        <span class="placeholder-text"><i class="fa-solid fa-hotel"></i> Stadium Image</span>
-                        <div class="country-badge canada-badge">Canada</div>
-                    </div>
-                    <div class="city-info">
-                        <h3>Toronto</h3>
-                        <p class="stadium-name">BMO Field</p>
-                        <div class="stadium-meta">
-                            <span><i class="fa-solid fa-users-viewfinder"></i> Capacity: 45,000</span>
-                            <span><i class="fa-solid fa-star"></i> Canada Opening Match</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="city-card" data-country="canada">
-                    <div class="city-img-placeholder" style="background: linear-gradient(135deg, #7b4397 0%, #dc2430 100%);">
-                        <span class="placeholder-text"><i class="fa-solid fa-hotel"></i> Stadium Image</span>
-                        <div class="country-badge canada-badge">Canada</div>
-                    </div>
-                    <div class="city-info">
-                        <h3>Vancouver</h3>
-                        <p class="stadium-name">BC Place</p>
-                        <div class="stadium-meta">
-                            <span><i class="fa-solid fa-users-viewfinder"></i> Capacity: 54,500</span>
-                            <span><i class="fa-solid fa-calendar-days"></i> 7 Matches Host</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Mexico -->
-                <div class="city-card" data-country="mexico">
-                    <div class="city-img-placeholder" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
-                        <span class="placeholder-text"><i class="fa-solid fa-hotel"></i> Stadium Image</span>
-                        <div class="country-badge mexico-badge">Mexico</div>
-                    </div>
-                    <div class="city-info">
-                        <h3>Mexico City</h3>
-                        <p class="stadium-name">Estadio Azteca</p>
-                        <div class="stadium-meta">
-                            <span><i class="fa-solid fa-users-viewfinder"></i> Capacity: 87,523</span>
-                            <span><i class="fa-solid fa-fire"></i> Opening Match Host</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="city-card" data-country="mexico">
-                    <div class="city-img-placeholder" style="background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);">
-                        <span class="placeholder-text"><i class="fa-solid fa-hotel"></i> Stadium Image</span>
-                        <div class="country-badge mexico-badge">Mexico</div>
-                    </div>
-                    <div class="city-info">
-                        <h3>Guadalajara</h3>
-                        <p class="stadium-name">Estadio Akron</p>
-                        <div class="stadium-meta">
-                            <span><i class="fa-solid fa-users-viewfinder"></i> Capacity: 48,071</span>
-                            <span><i class="fa-solid fa-soccer-ball"></i> 4 Matches Host</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="city-card" data-country="mexico">
-                    <div class="city-img-placeholder" style="background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);">
-                        <span class="placeholder-text"><i class="fa-solid fa-hotel"></i> Stadium Image</span>
-                        <div class="country-badge mexico-badge">Mexico</div>
-                    </div>
-                    <div class="city-info">
-                        <h3>Monterrey</h3>
-                        <p class="stadium-name">Estadio BBVA</p>
-                        <div class="stadium-meta">
-                            <span><i class="fa-solid fa-users-viewfinder"></i> Capacity: 53,500</span>
-                            <span><i class="fa-solid fa-shield-heart"></i> Steel Giant Stadium</span>
-                        </div>
-                    </div>
+            <!-- Spreadsheet Viewer Area -->
+            <div id="excel-viewer" class="excel-viewer" style="display: none;">
+                <!-- Sheet Selector Tabs -->
+                <div id="sheet-tabs" class="sheet-tabs"></div>
+                
+                <!-- Scrollable Table View -->
+                <div class="table-outer-container">
+                    <div id="table-container" class="table-container"></div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Fun Facts Section -->
-    <section id="funfacts" class="funfacts-section">
-        <div class="section-container">
-            <div class="section-header">
-                <h2 class="section-title">Fun Facts & Trivia</h2>
-                <div class="section-divider"></div>
-                <p class="section-desc">Interactive details that make this tournament unique. Click a card to flip it!</p>
-            </div>
+        </section>
 
-            <div class="facts-grid">
-                <!-- Fact 1 -->
-                <div class="fact-card-wrapper">
-                    <div class="fact-card">
-                        <div class="fact-front">
-                            <div class="fact-icon"><i class="fa-solid fa-landmark"></i></div>
-                            <h3>A Historic Triple</h3>
-                            <p class="tap-hint">Click to reveal fact <i class="fa-solid fa-arrow-rotate-right"></i></p>
-                        </div>
-                        <div class="fact-back">
-                            <h3>Estadio Azteca</h3>
-                            <p>Mexico City's legendary Estadio Azteca will become the first stadium in history to host matches in three separate FIFA World Cups (1970, 1986, and 2026).</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Fact 2 -->
-                <div class="fact-card-wrapper">
-                    <div class="fact-card">
-                        <div class="fact-front">
-                            <div class="fact-icon"><i class="fa-solid fa-plane-departure"></i></div>
-                            <h3>Smart Travel Clusters</h3>
-                            <p class="tap-hint">Click to reveal fact <i class="fa-solid fa-arrow-rotate-right"></i></p>
-                        </div>
-                        <div class="fact-back">
-                            <h3>Regional Groups</h3>
-                            <p>To reduce travel distances for players and fans, the host cities are grouped into three regional clusters: West, Central, and East. Teams will play group stage games within their cluster.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Fact 3 -->
-                <div class="fact-card-wrapper">
-                    <div class="fact-card">
-                        <div class="fact-front">
-                            <div class="fact-icon"><i class="fa-solid fa-chart-line"></i></div>
-                            <h3>Record Attendance</h3>
-                            <p class="tap-hint">Click to reveal fact <i class="fa-solid fa-arrow-rotate-right"></i></p>
-                        </div>
-                        <div class="fact-back">
-                            <h3>10+ Million Fans</h3>
-                            <p>With massive NFL and Liga MX stadiums hosting the games, FIFA projects over 10 million total ticket sales, smashing the previous record set by the USA in 1994 (3.6 million).</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Fact 4 -->
-                <div class="fact-card-wrapper">
-                    <div class="fact-card">
-                        <div class="fact-front">
-                            <div class="fact-icon"><i class="fa-solid fa-hashtag"></i></div>
-                            <h3>The Number 104</h3>
-                            <p class="tap-hint">Click to reveal fact <i class="fa-solid fa-arrow-rotate-right"></i></p>
-                        </div>
-                        <div class="fact-back">
-                            <h3>More Games!</h3>
-                            <p>Originally planned for 80 matches, the tournament will feature 104 matches, meaning the champions must play 8 games (instead of 7) to lift the trophy.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    </main>
 
     <!-- Footer -->
     <footer class="main-footer">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <div class="logo">
-                    <span class="logo-fifa">FIFA</span>
-                    <span class="logo-year">2026</span>
-                </div>
-                <p>Welcome to the ultimate celebration of football, hosted across North America. Get ready for summer 2026!</p>
-            </div>
-            <div class="footer-links">
-                <h4>Navigation</h4>
-                <ul>
-                    <li><a href="#hero">Home</a></li>
-                    <li><a href="#stats">Overview</a></li>
-                    <li><a href="#cities">Host Cities</a></li>
-                    <li><a href="#funfacts">Fun Facts</a></li>
-                </ul>
-            </div>
-            <div class="footer-socials">
-                <h4>Follow the Event</h4>
-                <div class="social-icons">
-                    <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-                    <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 FIFA World Cup Landing Page. Created with ❤️ for football fans.</p>
-        </div>
+        <p>&copy; 2026 Egyetemi Tanulmányi Portál - teszt.github.io</p>
     </footer>
 
-    <!-- JS Scripts -->
+    <!-- SheetJS Library from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- App Logic -->
     <script src="script.js"></script>
 </body>
 </html>
