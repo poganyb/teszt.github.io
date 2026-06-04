@@ -135,6 +135,73 @@ body {
     background-color: #f0fdf4;
 }
 
+/* ==========================================
+   FOLDER TREE STYLING
+   ========================================== */
+.file-list.submenu {
+    padding-left: 14px;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-left: 1.5px dashed #cbd5e1;
+}
+
+.folder-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 4px;
+}
+
+.folder-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 650;
+    transition: var(--transition);
+    background-color: #f9fafb;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+
+.folder-header:hover {
+    background-color: #f3f4f6;
+    border-color: var(--text-muted);
+}
+
+.folder-icon {
+    font-size: 1.25rem;
+    color: #d97706; /* Amber folder icon */
+}
+
+.folder-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.folder-chevron {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    transition: transform 0.2s ease-in-out;
+}
+
+.submenu-container.collapsed {
+    display: none;
+}
+
+.empty-folder {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
 .excel-icon {
     font-size: 1.5rem;
     color: var(--accent-excel);
