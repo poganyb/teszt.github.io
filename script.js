@@ -37,7 +37,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Bind event listeners for mobile drawer
-    if (sidebarToggle) sidebarToggle.addEventListener('click', openSidebar);
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent immediate bubbling if any
+            if (sidebar && sidebar.classList.contains('active')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+    }
     if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
     if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
 
