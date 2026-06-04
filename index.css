@@ -719,6 +719,10 @@ body {
     color: #2b579a !important; /* Blue for Word */
 }
 
+.ppt-icon {
+    color: #d24726 !important; /* Orange/Red for PowerPoint */
+}
+
 .generic-icon {
     color: #6b7280 !important; /* Gray for others */
 }
