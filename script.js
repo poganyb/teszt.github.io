@@ -1,124 +1,189 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // ==========================================
-    // 1. COUNTDOWN TIMER
-    // ==========================================
-    // Opening Match Date: June 11, 2026 (EST/Mexico City time - set target to mid-day GMT)
-    const targetDate = new Date('June 11, 2026 12:00:00 GMT-0500').getTime();
 
-    const daysEl = document.getElementById('days');
-    const hoursEl = document.getElementById('hours');
-    const minutesEl = document.getElementById('minutes');
-    const secondsEl = document.getElementById('seconds');
+    const fileUrl = 'egyetem/statgyak.xlsx';
+    const statusCard = document.getElementById('status-card');
+    const statusTitle = document.getElementById('status-title');
+    const statusDesc = document.getElementById('status-desc');
+    const statusIcon = document.getElementById('status-icon');
+    const excelViewer = document.getElementById('excel-viewer');
+    const sheetTabsContainer = document.getElementById('sheet-tabs');
+    const tableContainer = document.getElementById('table-container');
+    const searchInput = document.getElementById('table-search');
+    const fileUpload = document.getElementById('file-upload');
 
-    function updateCountdown() {
-        const now = new Date().getTime();
-        const difference = targetDate - now;
+    let currentWorkbook = null;
 
-        if (difference <= 0) {
-            // World Cup has started!
-            document.querySelector('.timer').innerHTML = '<div class="timer-segment" style="width: 100%;"><span class="timer-val" style="font-size: 2.2rem; width: 100%;">TOURNAMENT UNDERWAY!</span></div>';
+    // Helper: Update Status UI
+    function setStatus(type, title, message) {
+        statusCard.className = `status-card ${type}`;
+        statusDesc.textContent = message;
+        statusTitle.textContent = title;
+
+        let iconHtml = '';
+        if (type === 'info') {
+            iconHtml = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            excelViewer.style.display = 'none';
+            searchInput.disabled = true;
+        } else if (type === 'success') {
+            iconHtml = '<i class="fa-solid fa-circle-check"></i>';
+            excelViewer.style.display = 'flex';
+            searchInput.disabled = false;
+        } else if (type === 'error') {
+            iconHtml = '<i class="fa-solid fa-circle-exclamation"></i>';
+            excelViewer.style.display = 'none';
+            searchInput.disabled = true;
+        }
+        statusCard.querySelector('.status-icon').innerHTML = iconHtml;
+    }
+
+    // Process and Load Excel Workbook
+    function loadWorkbook(workbook, sourceName) {
+        currentWorkbook = workbook;
+        
+        // Clear previous viewer state
+        sheetTabsContainer.innerHTML = '';
+        tableContainer.innerHTML = '';
+        searchInput.value = '';
+
+        const sheetNames = workbook.SheetNames;
+        if (!sheetNames || sheetNames.length === 0) {
+            setStatus('error', 'Sikertelen betöltés', 'Ez az Excel fájl nem tartalmaz munkalapokat.');
             return;
         }
 
-        // Time calculations
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+        // Generate sheet selector tabs
+        sheetNames.forEach((sheetName, index) => {
+            const tabBtn = document.createElement('button');
+            tabBtn.className = `sheet-tab ${index === 0 ? 'active' : ''}`;
+            tabBtn.textContent = sheetName;
+            tabBtn.addEventListener('click', () => {
+                // Switch sheet
+                document.querySelectorAll('.sheet-tab').forEach(t => t.classList.remove('active'));
+                tabBtn.classList.add('active');
+                renderSheet(sheetName);
+            });
+            sheetTabsContainer.appendChild(tabBtn);
+        });
 
-        // Format single digits with leading zero
-        daysEl.textContent = String(days).padStart(2, '0');
-        hoursEl.textContent = String(hours).padStart(2, '0');
-        minutesEl.textContent = String(minutes).padStart(2, '0');
-        secondsEl.textContent = String(seconds).padStart(2, '0');
+        // Load the first sheet by default
+        renderSheet(sheetNames[0]);
+        setStatus('success', 'Fájl sikeresen betöltve', `Jelenleg megtekintve: ${sourceName}`);
     }
 
-    // Run countdown once immediately and set interval
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
+    // Render individual sheet as HTML table
+    function renderSheet(sheetName) {
+        const worksheet = currentWorkbook.Sheets[sheetName];
+        
+        // Convert sheet to HTML table using SheetJS utility
+        let htmlTable = XLSX.utils.sheet_to_html(worksheet, { id: 'excel-data-table', editable: false });
+        
+        // Insert into container
+        tableContainer.innerHTML = htmlTable;
 
+        // Customise the table (e.g. clean up empty labels or format layout)
+        const table = tableContainer.querySelector('table');
+        if (table) {
+            table.setAttribute('border', '0');
+            
+            // If the first row contains table headers, we make sure they use <th>
+            const firstRow = table.querySelector('tr');
+            if (firstRow) {
+                const cells = firstRow.querySelectorAll('td');
+                cells.forEach(cell => {
+                    const th = document.createElement('th');
+                    th.innerHTML = cell.innerHTML;
+                    // Copy colspan or rowspan if present
+                    if (cell.getAttribute('colspan')) th.setAttribute('colspan', cell.getAttribute('colspan'));
+                    if (cell.getAttribute('rowspan')) th.setAttribute('rowspan', cell.getAttribute('rowspan'));
+                    cell.replaceWith(th);
+                });
+            }
+        }
+
+        // Reset search value on sheet change
+        searchInput.value = '';
+    }
+
+    // Fetch the Excel file from local path / GitHub repo
+    function fetchExcelFile() {
+        setStatus('info', 'Fájl betöltése folyamatban...', `Kapcsolódás a '${fileUrl}' fájlhoz a tárhelyről...`);
+
+        fetch(fileUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP hiba! státusz: ${response.status}`);
+                }
+                return response.arrayBuffer();
+            })
+            .then(data => {
+                const arr = new Uint8Array(data);
+                const workbook = XLSX.read(arr, { type: 'array' });
+                loadWorkbook(workbook, 'statgyak.xlsx');
+            })
+            .catch(error => {
+                console.error('Error fetching file:', error);
+                setStatus(
+                    'error', 
+                    'A statgyak.xlsx nem tölthető be automatikusan', 
+                    `A fájl nem található a megadott útvonalon (${fileUrl}). Kérlek ellenőrizd, hogy a fájl a helyén van-e a repóban! Addig is, próbáld ki a betöltést a jobb oldali gombbal.`
+                );
+            });
+    }
 
     // ==========================================
-    // 2. HOST CITIES FILTERING
+    // 5. SEARCH & FILTERING IN TABLE
     // ==========================================
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const cityCards = document.querySelectorAll('.city-card');
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const table = tableContainer.querySelector('table');
+        if (!table) return;
 
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Remove active class from all buttons
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            // Add active class to clicked button
-            button.classList.add('active');
+        const rows = table.querySelectorAll('tr');
+        
+        // Loop through all table rows, skip the header row (index 0)
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            const cells = row.querySelectorAll('td, th');
+            let rowContainsQuery = false;
 
-            const filterValue = button.getAttribute('data-filter');
-
-            cityCards.forEach(card => {
-                const country = card.getAttribute('data-country');
-                
-                // Hide with transition
-                if (filterValue === 'all' || country === filterValue) {
-                    card.style.display = 'block';
-                    // Trigger reflow for transition
-                    setTimeout(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'scale(1)';
-                    }, 50);
-                } else {
-                    card.style.opacity = '0';
-                    card.style.transform = 'scale(0.95)';
-                    // Delay display:none to let transition finish
-                    setTimeout(() => {
-                        card.style.display = 'none';
-                    }, 300);
+            cells.forEach(cell => {
+                if (cell.textContent.toLowerCase().includes(query)) {
+                    rowContainsQuery = true;
                 }
             });
-        });
-    });
 
-
-    // ==========================================
-    // 3. INTERACTIVE FUN FACTS FLIP
-    // ==========================================
-    const factCards = document.querySelectorAll('.fact-card');
-
-    factCards.forEach(card => {
-        card.addEventListener('click', () => {
-            // Toggle flipped state
-            card.classList.toggle('flipped');
-        });
-    });
-
-
-    // ==========================================
-    // 4. MOBILE NAVIGATION MENU
-    // ==========================================
-    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-    const navLinksContainer = document.querySelector('.nav-links');
-    const navLinks = document.querySelectorAll('.nav-links a');
-
-    // Toggle menu
-    mobileMenuBtn.addEventListener('click', () => {
-        navLinksContainer.classList.toggle('active');
-        const icon = mobileMenuBtn.querySelector('i');
-        if (navLinksContainer.classList.contains('active')) {
-            icon.classList.remove('fa-bars');
-            icon.classList.add('fa-xmark');
-        } else {
-            icon.classList.remove('fa-xmark');
-            icon.classList.add('fa-bars');
+            if (rowContainsQuery || query === '') {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
         }
     });
 
-    // Close menu when a link is clicked
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            navLinksContainer.classList.remove('active');
-            const icon = mobileMenuBtn.querySelector('i');
-            icon.classList.remove('fa-xmark');
-            icon.classList.add('fa-bars');
-        });
+    // ==========================================
+    // 6. FILE UPLOADER HANDLER (FALLBACK)
+    // ==========================================
+    fileUpload.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setStatus('info', 'Helyi fájl feldolgozása...', `A(z) ${file.name} fájl beolvasása...`);
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                loadWorkbook(workbook, file.name);
+            } catch (err) {
+                console.error(err);
+                setStatus('error', 'Sikertelen fájl feldolgozás', 'Nem sikerült beolvasni a fájlt. Ellenőrizd, hogy valóban érvényes Excel (.xlsx) formátum-e.');
+            }
+        };
+        reader.readAsArrayBuffer(file);
     });
+
+    // Initialise fetch
+    fetchExcelFile();
 
 });
