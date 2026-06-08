@@ -408,6 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const treeItem = {
                 name: item.name,
                 path: item.path,
+                downloadUrl: item.download_url,
                 type: item.type === 'dir' ? 'dir' : 'file',
                 children: []
             };
@@ -502,6 +503,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     iconColorClass = 'ppt-icon';
                 }
                 
+                const fileLink = item.downloadUrl || item.path;
+
                 li.innerHTML = `
                     <div class="file-info-group">
                         <i class="${iconClass} ${iconColorClass}"></i>
@@ -510,7 +513,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span class="file-path">${item.path}</span>
                         </div>
                     </div>
-                    <a href="${item.path}" download class="btn-download-file" title="Letöltés">
+                    <a href="${fileLink}" download class="btn-download-file" title="Letöltés">
                         <i class="fa-solid fa-download"></i>
                     </a>
                 `;
@@ -521,7 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.querySelectorAll('.file-item').forEach(el => el.classList.remove('active'));
                     li.classList.add('active');
                     
-                    loadFile(item.path, item.name);
+                    loadFile(fileLink, item.name);
                     closeSidebar();
                 });
             }
