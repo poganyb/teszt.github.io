@@ -728,6 +728,68 @@ body {
 }
 
 /* ==========================================
+   PPTX PRESENTATION VIEWER
+   ========================================== */
+.pptx-viewer {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-height: 400px;
+}
+
+.pptx-viewer-header {
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+    color: #d24726; /* PowerPoint Orange/Red */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pptx-outer-container {
+    flex: 1;
+    overflow: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #f1f5f9; /* Premium slate gray */
+    padding: 25px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    max-height: 700px;
+}
+
+.pptx-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+/* Enhancements for slides loaded dynamically */
+.pptx-container > div {
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.pptx-container > div:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* ==========================================
    RESPONSIVE LAYOUTS
    ========================================== */
 @media (max-width: 768px) {
@@ -836,5 +898,15 @@ body {
     .download-viewer {
         padding: 25px 12px;
         min-height: auto;
+    }
+
+    .pptx-viewer {
+        padding: 12px;
+        min-height: auto;
+    }
+
+    .pptx-outer-container {
+        max-height: 400px;
+        padding: 10px;
     }
 }
