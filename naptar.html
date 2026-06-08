@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naptár & Jegyzetek - Egyetemi Tanulmányi Portál</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;650;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-brand">
+            <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Menü megnyitása">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <i class="fa-solid fa-graduation-cap logo-icon"></i>
+            <h1>Egyetemi Tanulmányi Portál</h1>
+        </div>
+        <div class="header-status">
+            <span class="badge badge-test">TESZT FÁZIS</span>
+            <span id="header-clock" class="header-clock"></span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="dashboard-container">
+
+        <!-- Sidebar / Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header-mobile">
+                <h3><i class="fa-solid fa-bars"></i> Menü</h3>
+                <button id="sidebar-close" class="sidebar-close" aria-label="Menü bezárása">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <!-- Navigation Menu -->
+            <div class="sidebar-section nav-menu-section">
+                <a href="index.html" class="nav-item"><i class="fa-solid fa-graduation-cap"></i> Tanulmányi Portál</a>
+                <a href="naptar.html" class="nav-item active"><i class="fa-regular fa-calendar-days"></i> Naptár & Jegyzetek</a>
+            </div>
+
+            <!-- Notes Info Box -->
+            <div class="sidebar-section">
+                <h3><i class="fa-solid fa-circle-info"></i> Tudnivalók</h3>
+                <div class="instructions" style="font-size: 0.85rem; line-height: 1.5; color: var(--text-muted);">
+                    <p style="margin-bottom: 10px;">Ezen a felületen a naptár napjaira kattintva egyéni jegyzeteket rögzíthetsz.</p>
+                    <p>A jegyzeteket a böngésző helyi tárolója (LocalStorage) menti, így azok az oldal újratöltése után is megmaradnak.</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Viewer Content -->
+        <section class="viewer-content">
+
+            <!-- Calendar Container Card -->
+            <div class="calendar-viewer">
+                <div class="calendar-header">
+                    <div class="calendar-title-group">
+                        <i class="fa-regular fa-calendar-days"></i>
+                        <span id="calendar-month-year" class="calendar-month-year">Június 2026</span>
+                    </div>
+                    <div class="calendar-nav-buttons">
+                        <button id="btn-prev-month" class="btn-nav-cal" aria-label="Előző hónap">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <button id="btn-next-month" class="btn-nav-cal" aria-label="Következő hónap">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="calendar-grid-container">
+                    <div class="calendar-weekdays">
+                        <div>Hé</div>
+                        <div>Ke</div>
+                        <div>Sze</div>
+                        <div>Csü</div>
+                        <div>Pé</div>
+                        <div>Szo</div>
+                        <div>Va</div>
+                    </div>
+                    <div id="calendar-grid" class="calendar-grid">
+                        <!-- Days generated dynamically by JS -->
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <p>&copy; 2026 Egyetemi Tanulmányi Portál - teszt.github.io</p>
+    </footer>
+
+    <!-- Edit Note Modal -->
+    <div id="notes-modal" class="modal-overlay">
+        <div class="modal-wrapper">
+            <div class="modal-header">
+                <h3><i class="fa-regular fa-pen-to-square"></i> Jegyzet szerkesztése</h3>
+                <button id="btn-close-modal" class="btn-close-modal" aria-label="Bezárás">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label style="display: block; margin-bottom: 4px;">Kiválasztott dátum:</label>
+                <div id="notes-date-display" style="font-weight: 700; font-size: 1.05rem; margin-bottom: 16px; color: var(--primary);">2026. június 8.</div>
+                
+                <label for="notes-textarea" style="display: block; margin-bottom: 6px;">Jegyzet szövege:</label>
+                <textarea id="notes-textarea" class="notes-textarea" placeholder="Írd ide a jegyzetedet (pl. zh felkészülés, határidők)..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-cancel-note" class="btn btn-cancel">Mégse</button>
+                <button id="btn-save-note" class="btn btn-save">Mentés</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Logic for Calendar -->
+    <script src="naptar.js"></script>
+</body>
+
+</html>
