@@ -64,9 +64,9 @@
                 <!-- Fallback Uploader for testing custom files -->
                 <div class="upload-box">
                     <label for="file-upload" class="btn btn-upload">
-                        <i class="fa-solid fa-file-import"></i> Másik fájl betöltése (.xlsx, .pptx)
+                        <i class="fa-solid fa-file-import"></i> Másik fájl betöltése (.xlsx, .pptx, .docx)
                     </label>
-                    <input type="file" id="file-upload" accept=".xlsx, .xls, .pptx">
+                    <input type="file" id="file-upload" accept=".xlsx, .xls, .pptx, .docx">
                 </div>
             </div>
 
@@ -128,6 +128,16 @@
                 </div>
             </div>
 
+            <!-- Word DOCX Viewer Area -->
+            <div id="docx-viewer" class="docx-viewer" style="display: none;">
+                <div class="docx-viewer-header">
+                    <i class="fa-regular fa-file-word"></i> <span id="docx-file-title">dokumentum.docx</span>
+                </div>
+                <div class="docx-outer-container">
+                    <div id="docx-container" class="docx-container"></div>
+                </div>
+            </div>
+
         </section>
 
     </main>
@@ -141,6 +151,10 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <!-- PPTX Preview Library from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/pptx-preview@1.0.7/dist/pptx-preview.umd.min.js"></script>
+    <!-- JSZip Library (required by docx-preview) -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <!-- Docx Preview Library from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.1.15/dist/docx-preview.min.js"></script>
     <!-- App Logic -->
     <script src="script.js"></script>
 </body>
