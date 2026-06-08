@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileUpload = document.getElementById('file-upload');
     const fileTreeContainer = document.getElementById('file-tree-container');
     const pptxViewer = document.getElementById('pptx-viewer');
+    const docxViewer = document.getElementById('docx-viewer');
     
     // Mobile Drawer Navigation elements
     const sidebar = document.getElementById('sidebar');
@@ -174,6 +175,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Process and Load Word Document
+    function renderDocx(data, name) {
+        const docxTitle = document.getElementById('docx-file-title');
+        const docxContainer = document.getElementById('docx-container');
+        
+        if (docxViewer) {
+            if (docxTitle) docxTitle.textContent = name;
+            if (docxContainer) docxContainer.innerHTML = '';
+            
+            docxViewer.style.display = 'flex';
+            
+            // Render docx using docx-preview library
+            docx.renderAsync(data, docxContainer)
+                .then(() => {
+                    setStatus('success', 'Dokumentum sikeresen betöltve', `Jelenleg megtekintve: ${name}`);
+                })
+                .catch(err => {
+                    console.error('Error rendering docx:', err);
+                    setStatus('error', 'Sikertelen dokumentum megjelenítés', 'A Word dokumentumot nem sikerült renderelni.');
+                });
+        }
+    }
+
     // Fallback tree structure for offline/local view
     const fallbackTree = [
         {
@@ -278,6 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (codeViewer) codeViewer.style.display = 'none';
         if (downloadViewer) downloadViewer.style.display = 'none';
         if (pptxViewer) pptxViewer.style.display = 'none';
+        if (docxViewer) docxViewer.style.display = 'none';
         
         if (ext === 'xlsx' || ext === 'xls') {
             setStatus('info', 'Excel fájl betöltése folyamatban...', `Kapcsolódás a '${path}' fájlhoz a tárhelyről...`);
@@ -316,6 +341,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     setStatus(
                         'error', 
                         'A prezentáció nem tölthető be automatikusan', 
+                        `A(z) ${name} fájl nem érhető el. Próbáld meg betölteni a Másik fájl betöltése gombbal.`
+                    );
+                });
+        } else if (ext === 'docx') {
+            setStatus('info', 'Dokumentum betöltése folyamatban...', `Kapcsolódás a '${path}' dokumentumhoz a tárhelyről...`);
+            
+            fetch(path)
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP hiba! státusz: ${response.status}`);
+                    return response.arrayBuffer();
+                })
+                .then(data => {
+                    renderDocx(data, name);
+                })
+                .catch(error => {
+                    console.error('Error fetching file:', error);
+                    setStatus(
+                        'error', 
+                        'A dokumentum nem tölthető be automatikusan', 
                         `A(z) ${name} fájl nem érhető el. Próbáld meg betölteni a Másik fájl betöltése gombbal.`
                     );
                 });
@@ -608,11 +652,34 @@ document.addEventListener('DOMContentLoaded', () => {
                     excelViewer.style.display = 'none';
                     if (codeViewer) codeViewer.style.display = 'none';
                     if (downloadViewer) downloadViewer.style.display = 'none';
+                    if (docxViewer) docxViewer.style.display = 'none';
 
                     renderPptx(data, file.name);
                 } catch (err) {
                     console.error(err);
                     setStatus('error', 'Sikertelen fájl feldolgozás', 'Nem sikerült beolvasni a PowerPoint fájlt.');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        } else if (ext === 'docx') {
+            setStatus('info', 'Helyi dokumentum feldolgozása...', `A(z) ${file.name} fájl beolvasása...`);
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = e.target.result;
+                    // Hide all viewers
+                    const codeViewer = document.getElementById('code-viewer');
+                    const downloadViewer = document.getElementById('download-viewer');
+                    excelViewer.style.display = 'none';
+                    if (codeViewer) codeViewer.style.display = 'none';
+                    if (downloadViewer) downloadViewer.style.display = 'none';
+                    if (pptxViewer) pptxViewer.style.display = 'none';
+
+                    renderDocx(data, file.name);
+                } catch (err) {
+                    console.error(err);
+                    setStatus('error', 'Sikertelen fájl feldolgozás', 'Nem sikerült beolvasni a Word dokumentumot.');
                 }
             };
             reader.readAsArrayBuffer(file);
@@ -630,6 +697,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (pptxViewer) pptxViewer.style.display = 'none';
                     if (codeViewer) codeViewer.style.display = 'none';
                     if (downloadViewer) downloadViewer.style.display = 'none';
+                    if (docxViewer) docxViewer.style.display = 'none';
 
                     loadWorkbook(workbook, file.name);
                 } catch (err) {
@@ -639,7 +707,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             reader.readAsArrayBuffer(file);
         } else {
-            setStatus('error', 'Nem támogatott fájlformátum', 'Csak .xlsx, .xls és .pptx fájlok tölthetők be itt.');
+            setStatus('error', 'Nem támogatott fájlformátum', 'Csak .xlsx, .xls, .pptx és .docx fájlok tölthetők be itt.');
         }
     });
 
