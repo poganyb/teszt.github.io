@@ -64,9 +64,9 @@
                 <!-- Fallback Uploader for testing custom files -->
                 <div class="upload-box">
                     <label for="file-upload" class="btn btn-upload">
-                        <i class="fa-solid fa-file-import"></i> Másik fájl betöltése (.xlsx)
+                        <i class="fa-solid fa-file-import"></i> Másik fájl betöltése (.xlsx, .pptx)
                     </label>
-                    <input type="file" id="file-upload" accept=".xlsx, .xls">
+                    <input type="file" id="file-upload" accept=".xlsx, .xls, .pptx">
                 </div>
             </div>
 
@@ -118,6 +118,16 @@
                 </div>
             </div>
 
+            <!-- PPTX Viewer Area -->
+            <div id="pptx-viewer" class="pptx-viewer" style="display: none;">
+                <div class="pptx-viewer-header">
+                    <i class="fa-regular fa-file-powerpoint"></i> <span id="pptx-file-title">bemutato.pptx</span>
+                </div>
+                <div class="pptx-outer-container">
+                    <div id="pptx-container" class="pptx-container"></div>
+                </div>
+            </div>
+
         </section>
 
     </main>
@@ -129,6 +139,8 @@
 
     <!-- SheetJS Library from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- PPTX Preview Library from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/pptx-preview@1.0.7/dist/pptx-preview.umd.min.js"></script>
     <!-- App Logic -->
     <script src="script.js"></script>
 </body>
