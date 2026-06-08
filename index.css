@@ -790,6 +790,75 @@ body {
 }
 
 /* ==========================================
+   WORD DOCX VIEWER
+   ========================================== */
+.docx-viewer {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-height: 400px;
+}
+
+.docx-viewer-header {
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+    color: #2b579a; /* Word Blue */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.docx-outer-container {
+    flex: 1;
+    overflow: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #f1f5f9; /* Slate gray background */
+    padding: 25px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    max-height: 700px;
+}
+
+.docx-container {
+    width: 100%;
+    max-width: 850px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+    border-radius: 6px;
+    padding: 40px;
+    overflow-x: auto;
+}
+
+/* Base style resets for elements inside docx container rendered by docx-preview */
+.docx-container article {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+    box-shadow: none !important;
+    background: none !important;
+}
+
+.docx-container table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.docx-container th, .docx-container td {
+    border: 1px solid #cbd5e1;
+    padding: 8px 12px;
+}
+
+/* ==========================================
    RESPONSIVE LAYOUTS
    ========================================== */
 @media (max-width: 768px) {
@@ -908,5 +977,19 @@ body {
     .pptx-outer-container {
         max-height: 400px;
         padding: 10px;
+    }
+
+    .docx-viewer {
+        padding: 12px;
+        min-height: auto;
+    }
+
+    .docx-outer-container {
+        max-height: 400px;
+        padding: 10px;
+    }
+
+    .docx-container {
+        padding: 15px !important;
     }
 }
