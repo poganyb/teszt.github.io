@@ -74,6 +74,39 @@ body {
     border: 1px solid #fde68a;
 }
 
+.header-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-clock {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background-color: #f3f4f6;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--transition);
+}
+
+.header-clock:hover {
+    background-color: #e5e7eb;
+    color: var(--text-main);
+    border-color: #cbd5e1;
+}
+
+.header-clock::before {
+    content: "\f017"; /* FontAwesome Clock Icon */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: var(--primary);
+}
+
 /* ==========================================
    DASHBOARD LAYOUT
    ========================================== */
