@@ -544,13 +544,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Render file tree
         fileTreeContainer.innerHTML = '';
-        const defaultFile = findFirstExcelFile(treeData);
-        const defaultPath = defaultFile ? defaultFile.path : '';
-        
-        renderFileTree(treeData, fileTreeContainer, 0, defaultPath);
+        renderFileTree(treeData, fileTreeContainer, 0, '');
 
-        if (defaultFile) {
-            loadFile(defaultFile.path, defaultFile.name);
+        if (treeData && treeData.length > 0) {
+            setStatus('success', 'Portál készen áll', 'Kérlek, válassz ki egy fájlt a bal oldali menüből a megtekintéshez.');
         } else {
             setStatus('error', 'Nincsenek elérhető fájlok', 'Nem találtunk megjeleníthető fájlt a tárhelyen.');
         }
